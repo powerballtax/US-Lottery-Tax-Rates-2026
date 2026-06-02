@@ -1,0 +1,35 @@
+name: Auto Generate HTML and Deploy
+
+# 触发条件：只要 JSON 数据文件或生成脚本被修改并推送到 main 分支，就触发运行
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '2026_state_tax_rates.json'
+      - 'build.js'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取仓库最新代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 安装 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 运行你的 js 脚本，生成最新的 index.html
+      - name: Generate index.html
+        run: node build.js
+
+      # 4. 如果 index.html 有变化，自动将它 Commit 并 Push 回 main 分支
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-generate index.html from JSON"
+          file_pattern: 'index.html'
