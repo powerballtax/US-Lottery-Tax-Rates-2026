@@ -8,7 +8,7 @@ on:
     paths:
       - '2026_state_tax_rates.json'
       - 'build.js'
-
+  workflow_dispatch:  # <--- 加上这一行代码
 jobs:
   build:
     runs-on: ubuntu-latest
